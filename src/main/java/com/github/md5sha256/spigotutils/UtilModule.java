@@ -2,17 +2,15 @@ package com.github.md5sha256.spigotutils;
 
 import com.github.md5sha256.spigotutils.builder.ItemSelector;
 import com.github.md5sha256.spigotutils.builder.StagedBuilder;
-import com.google.inject.AbstractModule;
-import com.google.inject.assistedinject.FactoryModuleBuilder;
 import com.github.md5sha256.spigotutils.concurrent.BukkitTaskSynchronizer;
 import com.github.md5sha256.spigotutils.concurrent.TaskSynchronizer;
-import net.kyori.adventure.platform.bukkit.BukkitAudiences;
-import net.kyori.adventure.text.serializer.bungeecord.BungeeComponentSerializer;
+import com.google.inject.AbstractModule;
+import com.google.inject.assistedinject.FactoryModuleBuilder;
+import io.papermc.lib.PaperLib;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -36,10 +34,14 @@ public class UtilModule extends AbstractModule {
     protected void configure() {
         bind(Plugin.class).toInstance(this.plugin);
         bind(TaskSynchronizer.class).toInstance(BukkitTaskSynchronizer.create(this.plugin));
-        bind(BukkitAudiences.class).toInstance(BukkitAudiences.create(this.plugin));
-        bind(BungeeComponentSerializer.class).toProvider(BungeeComponentSerializer::get);
-        bind(LegacyComponentSerializer.class).toProvider(LegacyComponentSerializer::legacyAmpersand);
-
+        if (PaperLib.isPaper()) {
+            bind(OfflinePlayerUtil.class).to(PaperOfflinePlayerUtil.class);
+        } else {
+            // Bind the spigot impl early as this utilizes reflection
+            bind(OfflinePlayerUtil.class).to(SpigotOfflinePlayerUtil.class).asEagerSingleton();
+        }
+        bind(LegacyComponentSerializer.class)
+                .toProvider(LegacyComponentSerializer::legacyAmpersand);
         install(new FactoryModuleBuilder().build(UtilityFactory.class));
     }
 
