@@ -12,6 +12,7 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -33,8 +34,9 @@ public class UtilModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(TaskSynchronizer.class).toInstance(BukkitTaskSynchronizer.create(plugin));
-        bind(BukkitAudiences.class).toInstance(BukkitAudiences.create(plugin));
+        bind(Plugin.class).toInstance(this.plugin);
+        bind(TaskSynchronizer.class).toInstance(BukkitTaskSynchronizer.create(this.plugin));
+        bind(BukkitAudiences.class).toInstance(BukkitAudiences.create(this.plugin));
         bind(BungeeComponentSerializer.class).toProvider(BungeeComponentSerializer::get);
         bind(LegacyComponentSerializer.class).toProvider(LegacyComponentSerializer::legacyAmpersand);
 
