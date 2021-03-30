@@ -42,12 +42,46 @@
                         </goals>
                         <configuration>
                             <minimizeJar>false</minimizeJar>
-                            <createSourcesJar>true</createSourcesJar>
-                            <shadeSourcesContent>true</shadeSourcesContent>
                             <relocations>
+                                <!-- Adventure, relocate because spigot doesn't have adventure -->
                                 <relocation>
-                                    <pattern>net.kyori.adventure.platform.bukkit</pattern>
-                                    <shadedPattern>com.github.md5sha256.spigotutils.shaded.adventure.platform.bukkit</shadedPattern>
+                                    <pattern>net.kyori.adventure</pattern>
+                                    <shadedPattern>com.github.md5sha256.spigotutils.shaded.adventure</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>net.kyori.examination</pattern>
+                                    <shadedPattern>com.github.md5sha256.spigotutils.shaded.examination</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.checkerframework</pattern>
+                                    <shadedPattern>com.github.md5sha256.spigotutils.shaded.checkerframework</shadedPattern>
+                                </relocation>
+                                <!-- Guice -->
+                                <relocation>
+                                    <pattern>com.google.inject</pattern>
+                                    <shadedPattern>com.github.md5sha256.spigotutils.shaded.inject</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>javax.inject</pattern>
+                                    <shadedPattern>com.github.md5sha256.spigotutils.shaded.javax.inject</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.aopalliance</pattern>
+                                    <shadedPattern>com.github.md5sha256.spigotutils.shaded.aopalliance</shadedPattern>
+                                </relocation>
+                                <!-- PaperLib -->
+                                <relocation>
+                                    <pattern>io.papermc.lib</pattern>
+                                    <shadedPattern>com.github.md5sha256.spigotutils.shaded.paperlib</shadedPattern>
+                                </relocation>
+                                <!-- ACF -->
+                                <relocation>
+                                    <pattern>co.aikar.commands</pattern>
+                                    <shadedPattern>com.github.md5sha256.spigotutils.shaded.commands</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>co.aikar.locales</pattern>
+                                    <shadedPattern>com.github.md5sha256.spigotutils.shaded.locales</shadedPattern>
                                 </relocation>
                             </relocations>
                             <filters>
@@ -56,12 +90,6 @@
                                     <excludes>
                                         <exclude>META-INF/*</exclude>
                                     </excludes>
-                                </filter>
-                                <filter>
-                                    <artifact>com.mccities:mccities-lib</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
                                 </filter>
                             </filters>
                         </configuration>
@@ -111,6 +139,12 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
             <version>5.0.1</version>
@@ -148,15 +182,21 @@
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
-            <artifactId>adventure-text-serializer-plain</artifactId>
-            <version>4.7.0</version>
+            <artifactId>adventure-platform-bukkit</artifactId>
+            <version>4.0.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
-            <artifactId>adventure-platform-bukkit</artifactId>
-            <version>4.0.0-SNAPSHOT</version>
+            <artifactId>adventure-text-serializer-plain</artifactId>
+            <version>4.7.0</version>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>net.kyori</groupId>
+                    <artifactId>adventure-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>io.papermc</groupId>
