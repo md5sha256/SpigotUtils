@@ -41,9 +41,13 @@ dependencies {
         exclude(group: "com.google.guava", module: "guava")
     }
     api("co.aikar:acf-paper:0.5.0-SNAPSHOT")
-    api("net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT")
-    api("net.kyori:adventure-platform-bukkit:4.0.0-SNAPSHOT")
-    api("net.kyori:adventure-text-serializer-plain:4.7.0")
+    api("net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT") {
+        exclude(group: "net.kyori", module: "adventure-api")
+    }
+
+    api("net.kyori:adventure-text-serializer-plain:4.7.0") {
+        exclude(group: "net.kyori", module: "adventure-api")
+    }
     api("io.papermc:paperlib:1.0.6")
 
     compileOnlyApi("com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT")

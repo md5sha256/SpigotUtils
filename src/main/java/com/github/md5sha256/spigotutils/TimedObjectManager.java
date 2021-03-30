@@ -17,25 +17,23 @@ import java.util.function.BiConsumer;
 
 public class TimedObjectManager<T> implements Cloneable {
 
-    private final BukkitScheduler scheduler = Bukkit.getScheduler();
     private final Map<T, SerializableStopwatch> dataMap = new HashMap<>();
     private final long maxTimeMillis;
     private final BukkitTask task;
     private BiConsumer<T, SerializableStopwatch> removalHandler;
 
-    @AssistedInject
-    public TimedObjectManager(@Assisted("maxTimeMillis") final long maxTimeMillis,
-                              @Assisted("updateIntervalTicks") final long updateIntervalTicks,
+    TimedObjectManager(final long maxTimeMillis,
+                              final long updateIntervalTicks,
                               final Plugin plugin) {
         this(maxTimeMillis, updateIntervalTicks, false, plugin);
     }
 
-    @AssistedInject
-    public TimedObjectManager(@Assisted("maxTimeMillis") final long maxTimeMillis,
-                              @Assisted("updateIntervalTicks") final long updateIntervalTicks,
+    TimedObjectManager(final long maxTimeMillis,
+                               final long updateIntervalTicks,
                               final boolean async,
                               final Plugin plugin) {
         this.maxTimeMillis = maxTimeMillis;
+        BukkitScheduler scheduler = Bukkit.getScheduler();
         if (async) {
             this.task = scheduler
                     .runTaskTimerAsynchronously(plugin, this::update, updateIntervalTicks, updateIntervalTicks);
