@@ -42,48 +42,6 @@
                         </goals>
                         <configuration>
                             <minimizeJar>false</minimizeJar>
-                            <relocations>
-                                <!-- Adventure, relocate because spigot doesn't have adventure -->
-                                <relocation>
-                                    <pattern>net.kyori.adventure</pattern>
-                                    <shadedPattern>com.github.md5sha256.spigotutils.shaded.adventure</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>net.kyori.examination</pattern>
-                                    <shadedPattern>com.github.md5sha256.spigotutils.shaded.examination</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>org.checkerframework</pattern>
-                                    <shadedPattern>com.github.md5sha256.spigotutils.shaded.checkerframework</shadedPattern>
-                                </relocation>
-                                <!-- Guice -->
-                                <relocation>
-                                    <pattern>com.google.inject</pattern>
-                                    <shadedPattern>com.github.md5sha256.spigotutils.shaded.inject</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>javax.inject</pattern>
-                                    <shadedPattern>com.github.md5sha256.spigotutils.shaded.javax.inject</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>org.aopalliance</pattern>
-                                    <shadedPattern>com.github.md5sha256.spigotutils.shaded.aopalliance</shadedPattern>
-                                </relocation>
-                                <!-- PaperLib -->
-                                <relocation>
-                                    <pattern>io.papermc.lib</pattern>
-                                    <shadedPattern>com.github.md5sha256.spigotutils.shaded.paperlib</shadedPattern>
-                                </relocation>
-                                <!-- ACF -->
-                                <relocation>
-                                    <pattern>co.aikar.commands</pattern>
-                                    <shadedPattern>com.github.md5sha256.spigotutils.shaded.commands</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>co.aikar.locales</pattern>
-                                    <shadedPattern>com.github.md5sha256.spigotutils.shaded.locales</shadedPattern>
-                                </relocation>
-                            </relocations>
                             <filters>
                                 <filter>
                                     <artifact>*:*</artifact>
