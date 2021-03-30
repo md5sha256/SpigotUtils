@@ -1,0 +1,87 @@
+plugins {
+    id "java"
+    id "java-library"
+    id "com.github.johnrengelman.shadow" version "6.1.0"
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        name = "sonatype"
+        url = "https://oss.sonatype.org/content/groups/public/"
+    }
+
+    maven {
+        name = "spigot repo"
+        url = "https://hub.spigotmc.org/nexus/content/repositories/snapshots/"
+    }
+
+    maven {
+        name = "paper repo"
+        url = "https://papermc.io/repo/repository/maven-public/"
+    }
+
+    maven {
+        name = "jitpack"
+        url = "https://jitpack.io"
+    }
+
+    maven {
+        name = "aikar"
+        url = "https://repo.aikar.co/content/groups/aikar/"
+    }
+}
+
+dependencies {
+
+    api("com.google.inject:guice:5.0.1") {
+        exclude(group: "com.google.guava", module: "guava")
+    }
+    api("com.google.inject.extensions:guice-assistedinject:5.0.1") {
+        exclude(group: "com.google.guava", module: "guava")
+    }
+    api("co.aikar:acf-paper:0.5.0-SNAPSHOT")
+    api("net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT")
+    api("net.kyori:adventure-platform-bukkit:4.0.0-SNAPSHOT")
+    api("net.kyori:adventure-text-serializer-plain:4.7.0")
+    api("io.papermc:paperlib:1.0.6")
+
+    compileOnlyApi("com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT")
+    compileOnlyApi("org.jetbrains:annotations:20.1.0")
+
+}
+
+
+group = "com.github.md5sha256"
+version = "0.1.0"
+description = "SpigotUtils"
+sourceCompatibility = "1.8"
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+compileJava {
+    // Keep params
+    options.compilerArgs += ["-parameters"]
+    options.fork = true
+    options.forkOptions.executable = "javac"
+}
+
+
+task sourcesJar(type: Jar) {
+    archiveClassifier.set("sources")
+    from(sourceSets.main.allJava)
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
+assemble {
+    dependsOn(shadowJar)
+}
+
+shadowJar {
+}
