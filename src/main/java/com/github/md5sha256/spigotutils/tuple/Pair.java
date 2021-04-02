@@ -4,7 +4,25 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Map;
+import java.util.function.Supplier;
+
 public final class Pair<K, V> {
+
+    @SafeVarargs
+    public static <K, V> Map<K, V> collect(@NotNull Supplier<? extends Map<K, V>> mapSupplier,
+                                           @NotNull Pair<K, V>... pairs) {
+        final Map<K, V> map = mapSupplier.get();
+        collect(map, pairs);
+        return map;
+    }
+
+    @SafeVarargs
+    public static <K, V> void collect(@NotNull Map<K, V> map, @NotNull Pair<K, V>... pairs) {
+        for (Pair<K, V> pair : pairs) {
+            map.put(pair.primary, pair.secondary);
+        }
+    }
 
     private final @Nullable K primary;
     private final @Nullable V secondary;
