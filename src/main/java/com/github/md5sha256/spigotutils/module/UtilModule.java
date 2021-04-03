@@ -14,9 +14,12 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import io.papermc.lib.PaperLib;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.bukkit.Bukkit;
+import org.bukkit.Server;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitScheduler;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -40,6 +43,7 @@ public class UtilModule extends AbstractModule {
     @Override
     protected void configure() {
         bind(Plugin.class).toInstance(this.options.plugin);
+        install(new BukkitPlatformModule());
         bind(UtilityFactory.class).to(UtilityFactoryImpl.class).in(Singleton.class);
 
         bind(LegacyComponentSerializer.class).toProvider(LegacyComponentSerializer::legacyAmpersand);

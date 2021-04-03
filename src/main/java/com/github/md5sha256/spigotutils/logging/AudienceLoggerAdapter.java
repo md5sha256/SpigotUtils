@@ -1,6 +1,7 @@
 package com.github.md5sha256.spigotutils.logging;
 
 import com.github.md5sha256.spigotutils.concurrent.TaskSynchronizer;
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 
@@ -10,39 +11,57 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
-public class PluginLoggerAdapter {
+public class AudienceLoggerAdapter {
 
-    private PluginLoggerAdapter() {
+    private AudienceLoggerAdapter() {
     }
 
-    public static @NotNull SmartLogger adapt(final TaskSynchronizer synchronizer,
-                                             final Logger logger,
-                                             final ExceptionParser exceptionParser,
-                                             final Map<Level, LogMessageFormatter> formatterMap) {
-        return new PluginLoggerBridge(synchronizer, logger, exceptionParser, formatterMap);
+    public static @NotNull SmartLogger adapt(
+            final Level level,
+            final Component prefix,
+            final Audience audience,
+            final TaskSynchronizer synchronizer,
+            final ExceptionParser exceptionParser,
+            final Map<Level, LogMessageFormatter> formatterMap
+    ) {
+        return new AudienceLoggingBridge(level, prefix, audience, exceptionParser, formatterMap, synchronizer);
     }
 
-    public static @NotNull SmartLogger adapt(final TaskSynchronizer synchronizer, final Logger logger) {
-        return adapt(synchronizer, logger, Formatters.defaultExceptionParser(), Formatters.defaults());
+    public static @NotNull SmartLogger adapt(
+            final Level level,
+            final Component prefix,
+            final Audience audience,
+            final TaskSynchronizer synchronizer
+    ) {
+        return new AudienceLoggingBridge(level, prefix, audience, Formatters.defaultExceptionParser(),
+               Formatters.defaults(), synchronizer
+        );
     }
 
-    private static class PluginLoggerBridge implements SmartLogger {
+    private static class AudienceLoggingBridge implements SmartLogger {
 
         private static final Function<Level, LogMessageFormatter> IDENTITY = (unused) -> LogMessageFormatter.identity();
 
         private final Map<Level, LogMessageFormatter> formatterMap;
         private final TaskSynchronizer synchronizer;
-        private final Logger logger;
+        private final Audience audience;
+        private final Component prefix;
         private final ExceptionParser parser;
+        private final Level level;
 
-        public PluginLoggerBridge(final TaskSynchronizer synchronizer,
-                                  final Logger logger,
-                                  final ExceptionParser exceptionParser,
-                                  final Map<Level, LogMessageFormatter> formatterMap) {
+        public AudienceLoggingBridge(
+                final Level level,
+                final Component prefix,
+                final Audience audience,
+                final ExceptionParser exceptionParser,
+                final Map<Level, LogMessageFormatter> formatterMap,
+                final TaskSynchronizer synchronizer
+        ) {
+            this.level = Objects.requireNonNull(level);
             this.synchronizer = Objects.requireNonNull(synchronizer);
-            this.logger = Objects.requireNonNull(logger);
+            this.audience = Objects.requireNonNull(audience);
+            this.prefix = Objects.requireNonNull(prefix).append(Component.space());
             this.parser = Objects.requireNonNull(exceptionParser);
             final Map<Level, LogMessageFormatter> copy = new HashMap<>(formatterMap);
             copy.computeIfAbsent(Level.INFO, IDENTITY);
@@ -52,58 +71,39 @@ public class PluginLoggerAdapter {
             this.formatterMap = Collections.unmodifiableMap(copy);
         }
 
-        @Override
-        public void info(Component... messages) {
-            log(Level.INFO, messages);
-        }
-
-        @Override
-        public void debug(@NotNull Component... messages) {
-            log(Level.FINE, messages);
-        }
-
-        @Override
-        public void warn(@NotNull Component... messages) {
-            log(Level.WARNING, messages);
-        }
-
-        @Override
-        public void error(@NotNull Component... messages) {
-            log(Level.SEVERE, messages);
-        }
-
         private void log(@NotNull Level level, @NotNull Component... messages) {
-            final LogMessageFormatter formatter = formatterMap.get(Level.INFO);
-            ILogger.format(messages, formatter);
-            for (String s : ILogger.toLegacyString(messages)) {
-                logger.log(level, s);
+            final LogMessageFormatter formatter = this.formatterMap.get(level);
+            for (Component message : messages) {
+                audience.sendMessage(prefix.append(formatter.transform(message)));
             }
         }
 
         private void log(@NotNull Level level, @NotNull String... messages) {
-            for (String s : messages) {
-                logger.log(level, s);
+            final Component[] components = new Component[messages.length];
+            for (int i = 0; i < messages.length; i++) {
+                components[i] = Component.text(messages[i]);
             }
+            log(level, components);
         }
 
         @Override
         public boolean isInfoEnabled() {
-            return logger.isLoggable(Level.INFO);
+            return isLoggable(Level.INFO);
         }
 
         @Override
         public boolean isWarnEnabled() {
-            return logger.isLoggable(Level.WARNING);
+            return isLoggable(Level.WARNING);
         }
 
         @Override
         public boolean isErrorEnabled() {
-            return logger.isLoggable(Level.SEVERE);
+            return isLoggable(Level.SEVERE);
         }
 
         @Override
         public boolean isDebugEnabled() {
-            return logger.isLoggable(Level.FINE);
+            return isLoggable(Level.FINE);
         }
 
         @Override
@@ -143,6 +143,32 @@ public class PluginLoggerAdapter {
         public void plain(@NotNull String... messages) {
             log(Level.ALL, messages);
         }
+
+        @Override
+        public void info(Component... messages) {
+            log(Level.INFO, messages);
+        }
+
+        @Override
+        public void debug(@NotNull Component... messages) {
+            log(Level.FINE, messages);
+        }
+
+        @Override
+        public void warn(@NotNull Component... messages) {
+            log(Level.WARNING, messages);
+        }
+
+        @Override
+        public void error(@NotNull Component... messages) {
+            log(Level.SEVERE, messages);
+        }
+
+        private boolean isLoggable(Level level) {
+            int levelValue = this.level.intValue();
+            return level.intValue() >= levelValue && levelValue != Level.OFF.intValue();
+        }
+
     }
 
 }
