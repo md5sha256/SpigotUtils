@@ -1,7 +1,52 @@
+import com.github.jk1.license.render.*
+
 plugins {
     id "java"
     id "java-library"
     id "com.github.johnrengelman.shadow" version "6.1.0"
+    id 'com.github.jk1.dependency-license-report' version '1.16'
+}
+
+group = "com.github.md5sha256"
+version = "0.1.0"
+description = "SpigotUtils"
+sourceCompatibility = "1.8"
+
+test {
+    useJUnitPlatform()
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+compileJava {
+    // Keep params
+    options.compilerArgs += ["-parameters"]
+    options.fork = true
+    options.forkOptions.executable = "javac"
+}
+
+licenseReport {
+    renderer(new InventoryMarkdownReportRenderer("THIRD-PARTY.MD"))
+    excludeOwnGroup = true
+}
+
+task sourcesJar(type: Jar) {
+    archiveClassifier.set("sources")
+    from(sourceSets.main.allJava)
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
+assemble {
+    dependsOn(shadowJar)
+}
+
+shadowJar {
 }
 
 repositories {
@@ -60,43 +105,4 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.1")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.1")
 
-}
-
-test {
-    useJUnitPlatform()
-}
-
-
-group = "com.github.md5sha256"
-version = "0.1.0"
-description = "SpigotUtils"
-sourceCompatibility = "1.8"
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-}
-
-compileJava {
-    // Keep params
-    options.compilerArgs += ["-parameters"]
-    options.fork = true
-    options.forkOptions.executable = "javac"
-}
-
-
-task sourcesJar(type: Jar) {
-    archiveClassifier.set("sources")
-    from(sourceSets.main.allJava)
-}
-
-tasks.withType(JavaCompile) {
-    options.encoding = "UTF-8"
-}
-
-assemble {
-    dependsOn(shadowJar)
-}
-
-shadowJar {
 }
