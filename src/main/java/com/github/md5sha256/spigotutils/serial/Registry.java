@@ -26,7 +26,13 @@ public interface Registry<K, T> {
 
     void clear();
 
+    boolean containsKey(@NotNull K key);
+
     int size();
+
+    default boolean isEmpty() {
+        return size() == 0;
+    }
 
     @NotNull Set<@NotNull K> keySet();
 

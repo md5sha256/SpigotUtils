@@ -36,9 +36,9 @@ public class BoundedNumberQuery implements NumberQuery {
     public boolean test(final @NotNull Number number) {
         boolean minTest;
         if (inclusive) {
-            minTest = min.doubleValue() >= number.doubleValue();
+            minTest = number.doubleValue() >= min.doubleValue();
         } else {
-            minTest = min.doubleValue() > number.doubleValue();
+            minTest = number.doubleValue() > min.doubleValue();
         }
         boolean maxTest;
         if (exclusive) {
@@ -55,7 +55,31 @@ public class BoundedNumberQuery implements NumberQuery {
 
     @Override
     public @NotNull NumberQuery negate() {
-        return new BoundedNumberQuery(max, min, this.inclusive, this.exclusive, !this.and);
+        return new BoundedNumberQuery(max, min, !this.inclusive, !this.exclusive, !this.and);
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        BoundedNumberQuery that = (BoundedNumberQuery) o;
+
+        if (inclusive != that.inclusive) return false;
+        if (exclusive != that.exclusive) return false;
+        if (and != that.and) return false;
+        if (!min.equals(that.min)) return false;
+        return max.equals(that.max);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = min.hashCode();
+        result = 31 * result + max.hashCode();
+        result = 31 * result + (inclusive ? 1 : 0);
+        result = 31 * result + (exclusive ? 1 : 0);
+        result = 31 * result + (and ? 1 : 0);
+        return result;
     }
 
 }

@@ -50,9 +50,20 @@ dependencies {
     }
     api("io.papermc:paperlib:1.0.6")
 
-    compileOnlyApi("com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT")
+    compileOnlyApi("com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT") {
+        testImplementation("net.kyori:adventure-text-serializer-legacy:4.7.0")
+    }
     compileOnlyApi("org.jetbrains:annotations:20.1.0")
 
+    // Test dependencies
+    testImplementation("com.github.seeseemelk:MockBukkit-v1.16:0.25.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.1")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.1")
+
+}
+
+test {
+    useJUnitPlatform()
 }
 
 

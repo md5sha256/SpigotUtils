@@ -32,7 +32,7 @@ public class SerializableEnum<E extends Enum<E>> implements ConfigurationSeriali
             final Class<? extends Enum> casted = clazz.asSubclass(Enum.class);
             return new SerializableEnum<>(Enum.valueOf(casted, name));
         } catch (final ClassNotFoundException ex) {
-            throw new RuntimeException(ex);
+            throw new IllegalArgumentException("Invalid class: " + name);
         }
     }
 
@@ -47,4 +47,23 @@ public class SerializableEnum<E extends Enum<E>> implements ConfigurationSeriali
     public Enum<E> get() {
         return Enum.valueOf(clazz, name);
     }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SerializableEnum<?> that = (SerializableEnum<?>) o;
+
+        if (!clazz.equals(that.clazz)) return false;
+        return name.equals(that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = clazz.hashCode();
+        result = 31 * result + name.hashCode();
+        return result;
+    }
+
 }

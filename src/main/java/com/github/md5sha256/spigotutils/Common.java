@@ -10,8 +10,12 @@ import java.util.regex.Pattern;
 
 public final class Common {
 
-    public static final Pattern HEX_PATTERN = Pattern.compile("(#)[0-9A-F]{6}");
-    public static final Pattern LEGACY_PATTERN = Pattern.compile("&[0-9-A-F]}");
+    private Common() {
+        throw new IllegalStateException("Cannot instantiate utility class");
+    }
+
+    public static final Pattern HEX_PATTERN = Pattern.compile("(#)[0-9A-F]{6}", Pattern.CASE_INSENSITIVE);
+    public static final Pattern LEGACY_PATTERN = Pattern.compile("&[0-9-A-F]", Pattern.CASE_INSENSITIVE);
 
     public static String legacyColorise(@NotNull final String string) {
         return ChatColor.translateAlternateColorCodes('&', string);
@@ -24,6 +28,11 @@ public final class Common {
 
     public static long toTicks(final long duration, @NotNull final TimeUnit unit) {
         return unit.toMillis(duration) / 50;
+    }
+
+    public static long fromTicks(final long ticks, @NotNull final TimeUnit unit) {
+        final long millis = ticks * 50;
+        return unit.convert(millis, TimeUnit.MILLISECONDS);
     }
 
     public static String capitalise(final String string) {
@@ -42,11 +51,11 @@ public final class Common {
     }
 
     public static boolean isLegacyText(@NotNull final String text) {
-        return LEGACY_PATTERN.matcher(text).matches();
+        return LEGACY_PATTERN.matcher(text).find();
     }
 
     public static boolean isHexText(@NotNull final String text) {
-        return HEX_PATTERN.matcher(text).matches();
+        return HEX_PATTERN.matcher(text).find();
     }
 
     /**

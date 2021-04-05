@@ -10,78 +10,67 @@ import java.util.concurrent.TimeUnit;
 
 public class SerializableStopwatch implements ConfigurationSerializable {
 
-    private static final String LAST_CHECK_KEY = "last-check-millis", ELAPSED_KEY = "elapsed", RUNNING_KEY = "is-running";
+    private static final String ELAPSED_KEY = "elapsed", RUNNING_KEY = "is-running";
 
-    private long elapsed;
-    private long lastCheckMillis = 0;
-    private boolean running;
+    private long elapsed = 0;
+    private final Stopwatch stopwatch = Stopwatch.createUnstarted();
 
     public SerializableStopwatch() {
     }
 
     public SerializableStopwatch(@NotNull final Stopwatch stopwatch) {
         this.elapsed = stopwatch.elapsed(TimeUnit.MILLISECONDS);
-        this.running = stopwatch.isRunning();
     }
 
     public SerializableStopwatch(@NotNull final Map<String, Object> serial) {
         checkKeys(serial);
         this.elapsed = ((Number) serial.get(ELAPSED_KEY)).longValue();
-        this.lastCheckMillis = ((Number) serial.get(LAST_CHECK_KEY)).longValue();
-        this.running = (boolean) serial.get(RUNNING_KEY);
+        boolean running = (boolean) serial.get(RUNNING_KEY);
+        if (running) {
+            stopwatch.start();
+        }
     }
 
     public SerializableStopwatch(final SerializableStopwatch other) {
         this.elapsed = other.elapsed;
-        this.lastCheckMillis = other.lastCheckMillis;
-        this.running = other.running;
+        if (other.stopwatch.isRunning()) {
+            this.stopwatch.start();
+        }
     }
 
     public SerializableStopwatch start() {
-        elapsed = 0;
-        lastCheckMillis = System.currentTimeMillis();
-        running = true;
+        if (!this.stopwatch.isRunning()) {
+            this.stopwatch.start();
+        }
         return this;
     }
 
     public boolean isRunning() {
-        return running;
+        return this.stopwatch.isRunning();
     }
 
-    public SerializableStopwatch pause() {
-        running = false;
+    public SerializableStopwatch stop() {
+        this.elapsed = this.stopwatch.elapsed(TimeUnit.MILLISECONDS);
+        this.stopwatch.reset();
         return this;
     }
 
     public long elapsed(final TimeUnit timeUnit) {
-        if (isRunning()) {
-           update();
-        }
-        return timeUnit.convert(this.elapsed, TimeUnit.MILLISECONDS);
+        return timeUnit.convert(elapsedMillis(), TimeUnit.MILLISECONDS);
     }
 
-    public long rawElapsed(final TimeUnit timeUnit) {
-        return timeUnit.convert(this.elapsed, TimeUnit.MILLISECONDS);
-    }
-
-    public void update() {
-        this.elapsed += System.currentTimeMillis() - lastCheckMillis;
-        this.lastCheckMillis = System.currentTimeMillis();
-    }
-
-    public long getMillisSinceLastUpdate() {
-        return System.currentTimeMillis() - lastCheckMillis;
+    public long elapsedMillis() {
+        return this.elapsed + this.stopwatch.elapsed(TimeUnit.MILLISECONDS);
     }
 
     public SerializableStopwatch reset() {
         this.elapsed = 0;
-        this.running = false;
-        this.lastCheckMillis = 0;
+        this.stopwatch.reset();
         return this;
     }
 
     private static void checkKeys(@NotNull final Map<String, Object> serial) {
-        if (!serial.containsKey(LAST_CHECK_KEY) || !serial.containsKey(ELAPSED_KEY) || !serial.containsKey(RUNNING_KEY)) {
+        if (!serial.containsKey(ELAPSED_KEY) || !serial.containsKey(RUNNING_KEY)) {
             throw new IllegalArgumentException("Invalid Serial!");
         }
     }
@@ -89,9 +78,24 @@ public class SerializableStopwatch implements ConfigurationSerializable {
     @Override
     public @NotNull Map<String, Object> serialize() {
         final Map<String, Object> map = new HashMap<>();
-        map.put(LAST_CHECK_KEY, lastCheckMillis);
-        map.put(ELAPSED_KEY, elapsed(TimeUnit.MILLISECONDS));
-        map.put(RUNNING_KEY, running);
+        map.put(ELAPSED_KEY, elapsedMillis());
+        map.put(RUNNING_KEY, stopwatch.isRunning());
         return map;
     }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SerializableStopwatch that = (SerializableStopwatch) o;
+
+        return this.elapsedMillis() == that.elapsedMillis();
+    }
+
+    @Override
+    public int hashCode() {
+        return Long.hashCode(this.elapsedMillis());
+    }
+
 }

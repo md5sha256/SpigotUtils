@@ -29,6 +29,11 @@ public class SimpleRegistry<K, T> implements Registry<K, T> {
     }
 
     @Override
+    public boolean containsKey(@NotNull final K key) {
+        return this.instances.containsKey(key);
+    }
+
+    @Override
     public void clear() {
         this.instances.clear();
     }
@@ -46,6 +51,21 @@ public class SimpleRegistry<K, T> implements Registry<K, T> {
     @Override
     public @NotNull Collection<@NotNull T> values() {
         return new ArrayList<>(this.instances.values());
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SimpleRegistry<?, ?> that = (SimpleRegistry<?, ?>) o;
+
+        return instances.equals(that.instances);
+    }
+
+    @Override
+    public int hashCode() {
+        return instances.hashCode();
     }
 
 }

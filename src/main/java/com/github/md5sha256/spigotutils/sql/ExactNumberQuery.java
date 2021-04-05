@@ -29,15 +29,17 @@ public class ExactNumberQuery implements NumberQuery {
         final double target = number.doubleValue();
         switch (comparator) {
             case GREATER:
-                return val > target;
+                return target > val;
             case GREATER_OR_EQUAL:
-                return val >= target;
+                return target >= val;
             case LESS:
-                return val < target;
+                return target < val;
             case LESS_OR_EQUAL:
-                return val <= target;
+                return target <= val;
             case EQUAL:
-                return val == target;
+                return target == val;
+            case NOT_EQUAL:
+                return target != val;
             default:
                 throw new IllegalStateException("Unknown comparator: " + comparator);
         }
@@ -46,6 +48,24 @@ public class ExactNumberQuery implements NumberQuery {
     @Override
     public @NotNull NumberQuery negate() {
         return new ExactNumberQuery(this.value, this.comparator.negate());
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ExactNumberQuery that = (ExactNumberQuery) o;
+
+        if (!value.equals(that.value)) return false;
+        return comparator == that.comparator;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = value.hashCode();
+        result = 31 * result + comparator.hashCode();
+        return result;
     }
 
 }

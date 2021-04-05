@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 public class SerializableUUID implements ConfigurationSerializable {
@@ -27,6 +28,22 @@ public class SerializableUUID implements ConfigurationSerializable {
     }
 
     @Override public @NotNull Map<String, Object> serialize() {
-        return Collections.singletonMap("UUID", value);
+        return Collections.singletonMap("UUID", value.toString());
     }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SerializableUUID that = (SerializableUUID) o;
+
+        return Objects.equals(value, that.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return value != null ? value.hashCode() : 0;
+    }
+
 }
