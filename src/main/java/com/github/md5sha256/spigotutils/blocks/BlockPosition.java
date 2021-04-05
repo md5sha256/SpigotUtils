@@ -149,19 +149,6 @@ public final class BlockPosition {
         return new Location(this.world.get(), getX(), getY(), getZ());
     }
 
-    /**
-     * This compacts the three provided integers into one {@link Long}.
-     * This allows us to save a lot memory-wise.
-     *
-     * @param x The x component
-     * @param y The y component
-     * @param z The z component
-     * @return The compacted {@link Long}
-     * @see #toLocation(World, long)
-     */
-    public static long getAsLong(int x, int y, int z) {
-        return ((long) (x & 0x3FFFFFF) << 38) | ((long) (z & 0x3FFFFFF) << 12) | (long) (y & 0xFFF);
-    }
 
     /**
      * Decode a given {@link Long} to a location.
@@ -176,6 +163,20 @@ public final class BlockPosition {
         int y = (int) (encoded & 0xFFF);
         int z = (int) (encoded << 26 >> 38);
         return new Location(world, x, y, z);
+    }
+
+    /**
+     * This compacts the three provided integers into one {@link Long}.
+     * This allows us to save a lot memory-wise.
+     *
+     * @param x The x component
+     * @param y The y component
+     * @param z The z component
+     * @return The compacted {@link Long}
+     * @see #toLocation(World, long)
+     */
+    public static long getAsLong(int x, int y, int z) {
+        return ((long) (x & 0x3FFFFFF) << 38) | ((long) (z & 0x3FFFFFF) << 12) | (long) (y & 0xFFF);
     }
 
     /**

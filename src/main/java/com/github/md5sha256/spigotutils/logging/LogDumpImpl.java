@@ -84,6 +84,8 @@ public class LogDumpImpl implements LogDump {
                     break;
                 case ALL:
                     logger.plain(entry.getKey());
+                    break;
+                default:
             }
         }
     }

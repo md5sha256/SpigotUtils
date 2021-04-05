@@ -24,13 +24,13 @@ public class SimpleRegistry<K, T> implements Registry<K, T> {
     }
 
     @Override
-    public @Nullable T clear(@NotNull K key) {
-        return this.instances.remove(key);
+    public boolean containsKey(@NotNull final K key) {
+        return this.instances.containsKey(key);
     }
 
     @Override
-    public boolean containsKey(@NotNull final K key) {
-        return this.instances.containsKey(key);
+    public @Nullable T clear(@NotNull K key) {
+        return this.instances.remove(key);
     }
 
     @Override
