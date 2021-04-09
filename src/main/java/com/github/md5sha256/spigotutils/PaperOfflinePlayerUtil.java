@@ -37,7 +37,7 @@ public class PaperOfflinePlayerUtil implements OfflinePlayerUtil {
         Optional<OfflinePlayer> optional = getCachedOfflinePlayer(name);
         return optional.map(CompletableFuture::completedFuture)
                        .orElseGet(() -> taskSynchronizer
-                               .async(() -> Bukkit.getOfflinePlayer(name)));
+                               .asyncGet(() -> Bukkit.getOfflinePlayer(name)));
     }
 
 }

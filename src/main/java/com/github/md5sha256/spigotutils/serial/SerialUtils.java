@@ -26,6 +26,12 @@ public class SerialUtils {
     private SerialUtils() {
     }
 
+    public static void init() {
+        ConfigurationSerialization.registerClass(SerializableEnum.class);
+        ConfigurationSerialization.registerClass(SerializableStopwatch.class);
+        ConfigurationSerialization.registerClass(SerializableUUID.class);
+    }
+
     public static void serializeMap(@NotNull final Map<?, ?> map,
         @NotNull final ConfigurationSection section) {
         for (Map.Entry<?, ?> entry : map.entrySet()) {

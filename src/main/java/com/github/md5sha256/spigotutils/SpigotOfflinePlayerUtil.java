@@ -100,7 +100,7 @@ public class SpigotOfflinePlayerUtil implements OfflinePlayerUtil {
     public @NotNull CompletableFuture<@NotNull OfflinePlayer> getOrLookupOfflinePlayer(@NotNull final String name) {
         final Optional<OfflinePlayer> optional = getCachedOfflinePlayer(name);
         return optional.map(CompletableFuture::completedFuture)
-                .orElseGet(() -> taskSynchronizer.async(()-> Bukkit.getOfflinePlayer(name)));
+                .orElseGet(() -> taskSynchronizer.asyncGet(()-> Bukkit.getOfflinePlayer(name)));
     }
 
 }

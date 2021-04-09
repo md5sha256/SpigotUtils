@@ -31,7 +31,7 @@ public class ThreadPoolSynchronizer implements TaskSynchronizer {
     }
 
     @Override
-    public @NotNull <T> CompletableFuture<T> syncNow(@NotNull final Callable<T> callable) {
+    public @NotNull <T> CompletableFuture<T> syncGetNow(@NotNull final Callable<T> callable) {
         final CompletableFuture<T> future = new CompletableFuture<>();
         scheduler.callSyncMethod(plugin, () -> {
             try {
@@ -45,7 +45,7 @@ public class ThreadPoolSynchronizer implements TaskSynchronizer {
     }
 
     @Override
-    public @NotNull <T> CompletableFuture<T> async(@NotNull final Callable<T> callable) {
+    public @NotNull <T> CompletableFuture<T> asyncGet(@NotNull final Callable<T> callable) {
         final CompletableFuture<T> future = new CompletableFuture<>();
         asyncExecutor.execute(() -> {
             try {

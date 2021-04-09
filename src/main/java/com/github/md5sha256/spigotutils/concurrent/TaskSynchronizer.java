@@ -20,15 +20,15 @@ public interface TaskSynchronizer {
         }
     }
 
-    @NotNull <T> CompletableFuture<T> syncNow(@NotNull Callable<T> callable);
+    @NotNull <T> CompletableFuture<T> syncGetNow(@NotNull Callable<T> callable);
 
     default @NotNull CompletableFuture<Void> syncNow(@NotNull Runnable runnable) {
-        return syncNow(Executors.callable(runnable, null));
+        return syncGetNow(Executors.callable(runnable, null));
     }
 
-    @NotNull <T> CompletableFuture<T> async(@NotNull Callable<T> callable);
+    @NotNull <T> CompletableFuture<T> asyncGet(@NotNull Callable<T> callable);
 
     default @NotNull CompletableFuture<Void> async(@NotNull Runnable runnable) {
-        return async(Executors.callable(runnable, null));
+        return asyncGet(Executors.callable(runnable, null));
     }
 }

@@ -28,7 +28,7 @@ public class BukkitTaskSynchronizer implements TaskSynchronizer {
     }
 
     @Override
-    public @NotNull <T> CompletableFuture<T> syncNow(@NotNull Callable<T> callable) {
+    public @NotNull <T> CompletableFuture<T> syncGetNow(@NotNull Callable<T> callable) {
         final CompletableFuture<T> completableFuture = new CompletableFuture<>();
         scheduler.callSyncMethod(plugin, () -> {
             try {
@@ -44,7 +44,7 @@ public class BukkitTaskSynchronizer implements TaskSynchronizer {
     }
 
     @Override
-    public @NotNull <T> CompletableFuture<T> async(@NotNull final Callable<T> callable) {
+    public @NotNull <T> CompletableFuture<T> asyncGet(@NotNull final Callable<T> callable) {
         return null;
     }
 }

@@ -7,6 +7,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class SerializableStopwatch implements ConfigurationSerializable {
 
@@ -16,6 +18,10 @@ public class SerializableStopwatch implements ConfigurationSerializable {
     private final Stopwatch stopwatch = Stopwatch.createUnstarted();
 
     public SerializableStopwatch() {
+    }
+
+    public SerializableStopwatch(long elapsed, @NotNull TimeUnit timeUnit) {
+        this.elapsed = timeUnit.toMillis(elapsed);
     }
 
     public SerializableStopwatch(@NotNull final Stopwatch stopwatch) {
