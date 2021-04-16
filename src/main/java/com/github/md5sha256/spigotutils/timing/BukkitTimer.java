@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
-public abstract class BukkitTimer<K, V> extends AbstractTimer<K, V> {
+public abstract class BukkitTimer<K, V, T extends TimerData<V>> extends AbstractTimer<K, V, T> {
 
     private final AtomicReference<BukkitTask> task = new AtomicReference<>();
 
@@ -17,10 +17,9 @@ public abstract class BukkitTimer<K, V> extends AbstractTimer<K, V> {
             @NotNull Plugin plugin,
             @NotNull BukkitScheduler scheduler,
             boolean async,
-            long intervalTicks,
-            @NotNull TimerListener<K, V> listener
+            long intervalTicks
     ) {
-        this(plugin, scheduler, async, intervalTicks, listener, Collections.emptyMap());
+        this(plugin, scheduler, async, intervalTicks, Collections.emptyMap());
     }
 
     public BukkitTimer(
@@ -28,10 +27,9 @@ public abstract class BukkitTimer<K, V> extends AbstractTimer<K, V> {
             @NotNull BukkitScheduler scheduler,
             boolean async,
             long intervalTicks,
-            @NotNull TimerListener<K, V> listener,
             @NotNull Map<K, V> entries
     ) {
-        super(listener, entries);
+        super(entries);
         final BukkitTask bukkitTask;
         if (async) {
             bukkitTask = scheduler.runTaskTimerAsynchronously(plugin, this::update, intervalTicks, intervalTicks);
@@ -40,8 +38,6 @@ public abstract class BukkitTimer<K, V> extends AbstractTimer<K, V> {
         }
         this.task.set(bukkitTask);
     }
-
-    protected abstract void update();
 
     @Override
     public boolean isShutdown() {

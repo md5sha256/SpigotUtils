@@ -7,32 +7,28 @@ import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public abstract class ExecutorTimer<K, V> extends AbstractTimer<K, V> {
+public abstract class ExecutorTimer<K, V, T extends TimerData<V>> extends AbstractTimer<K, V, T> {
 
     private final ScheduledExecutorService executor;
 
     public ExecutorTimer(
             @NotNull ScheduledExecutorService executor,
             long interval,
-            @NotNull TimeUnit timeUnit,
-            @NotNull TimerListener<K, V> listener
+            @NotNull TimeUnit timeUnit
     ) {
-        this(executor, interval, timeUnit, listener, Collections.emptyMap());
+        this(executor, interval, timeUnit, Collections.emptyMap());
     }
 
     public ExecutorTimer(
             @NotNull ScheduledExecutorService executor,
             long interval,
             @NotNull TimeUnit timeUnit,
-            @NotNull TimerListener<K, V> listener,
             @NotNull Map<K, V> entries
     ) {
-        super(listener, entries);
+        super(entries);
         this.executor = executor;
         this.executor.scheduleWithFixedDelay(this::update, interval, interval, timeUnit);
     }
-
-    protected abstract void update();
 
     @Override
     public void shutdown() {

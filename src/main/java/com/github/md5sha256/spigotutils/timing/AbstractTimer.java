@@ -7,44 +7,48 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-public abstract class AbstractTimer<K, V> implements Timer<K, V> {
+public abstract class AbstractTimer<K, V, T extends TimerData<V>> implements Timer<K, V, T> {
 
-    private final Map<K, TimerData<V>> entries = new ConcurrentHashMap<>();
+    private final Map<K, T> entries = new ConcurrentHashMap<>();
 
-    private final TimerListener<K, V> listener;
 
-    protected AbstractTimer(@NotNull TimerListener<K, V> listener) {
-        this.listener = Objects.requireNonNull(listener);
+    protected AbstractTimer() {
     }
 
-    protected AbstractTimer(@NotNull TimerListener<K, V> listener, @NotNull Map<K, V> entries) {
-        this(listener);
+    protected AbstractTimer(@NotNull Map<K, V> entries) {
         submitEntries(entries);
     }
 
-    protected abstract @NotNull TimerData<V> create(@NotNull K key, @NotNull V value);
+    protected abstract void update();
+
+    protected abstract void onRemove(@NotNull K key, @NotNull T value);
+
+    protected abstract @NotNull T create(@NotNull K key, @NotNull V value);
 
     @Override
-    public @NotNull Optional<@NotNull TimerData<V>> data(@NotNull final K key) {
+    public @NotNull Optional<@NotNull T> data(@NotNull final K key) {
         return Optional.ofNullable(this.entries.get(key));
     }
 
     @Override
-    public @NotNull TimerData<V> submit(@NotNull final K key, @NotNull final V value) {
+    public @NotNull T submit(@NotNull final K key, @NotNull final V value) {
         remove(key);
-        final TimerData<V> data = create(key, value);
+        final T data = create(key, value);
         this.entries.put(key, data);
         return data;
     }
 
+    protected void submitEntriesRaw(@NotNull Map<K, T> entries) {
+        this.entries.putAll(entries);
+    }
+
     @Override
-    public @NotNull Map<@NotNull K, @NotNull TimerData<V>> submitEntries(@NotNull final Map<K, V> entries) {
-        final Map<K, TimerData<V>> target = new HashMap<>(entries.size());
+    public @NotNull Map<@NotNull K, T> submitEntries(@NotNull final Map<K, V> entries) {
+        final Map<K, T> target = new HashMap<>(entries.size());
         for (Map.Entry<K, V> entry : entries.entrySet()) {
             target.put(entry.getKey(), create(entry.getKey(), entry.getValue()));
         }
@@ -54,9 +58,9 @@ public abstract class AbstractTimer<K, V> implements Timer<K, V> {
 
     @Override
     public void remove(@NotNull final K key) {
-        final TimerData<V> data = this.entries.remove(key);
+        final T data = this.entries.remove(key);
         if (data != null) {
-            this.listener.onRemove(key, data);
+            onRemove(key, data);
         }
     }
 
@@ -82,7 +86,7 @@ public abstract class AbstractTimer<K, V> implements Timer<K, V> {
     }
 
     @Override
-    public @NotNull Map<@NotNull K, @NotNull TimerData<V>> asMap() {
+    public @NotNull Map<@NotNull K, @NotNull T> asMap() {
         return new HashMap<>(this.entries);
     }
 
@@ -100,10 +104,10 @@ public abstract class AbstractTimer<K, V> implements Timer<K, V> {
 
     @Override
     public void clear() {
-        final Map<K, @NotNull TimerData<V>> copy = new HashMap<>(this.entries);
+        final Map<K, @NotNull T> copy = new HashMap<>(this.entries);
         this.entries.clear();
-        for (Map.Entry<K, TimerData<V>> entry : copy.entrySet()) {
-            this.listener.onRemove(entry.getKey(), entry.getValue());
+        for (Map.Entry<K, T> entry : copy.entrySet()) {
+            onRemove(entry.getKey(), entry.getValue());
         }
     }
 
