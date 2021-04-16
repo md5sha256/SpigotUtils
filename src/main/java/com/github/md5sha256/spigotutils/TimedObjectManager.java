@@ -1,8 +1,6 @@
 package com.github.md5sha256.spigotutils;
 
 import com.github.md5sha256.spigotutils.serial.SerializableStopwatch;
-import com.google.inject.assistedinject.Assisted;
-import com.google.inject.assistedinject.AssistedInject;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -15,6 +13,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 
+@Deprecated
 public class TimedObjectManager<T> implements Cloneable {
 
     private final Map<T, SerializableStopwatch> dataMap = new HashMap<>();
