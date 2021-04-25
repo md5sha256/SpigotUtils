@@ -77,7 +77,7 @@ public abstract class AbstractTimer<K, V, T extends TimerData<V>> implements Tim
     }
 
     @Override
-    public @NotNull Collection<V> values() {
+    public @NotNull Collection<@NotNull V> values() {
         final Collection<V> values = new ArrayList<>(this.entries.values().size());
         for (TimerData<V> data : this.entries.values()) {
             values.add(data.data());
