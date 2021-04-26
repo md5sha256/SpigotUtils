@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class SimpleRegistry<K, T> implements Registry<K, T> {
 
-    private final Map<K, T> instances = new ConcurrentHashMap<>();
+    protected final Map<K, T> instances = new ConcurrentHashMap<>();
 
     @Override
     public @NotNull Optional<@NotNull T> get(@NotNull K key) {
