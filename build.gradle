@@ -1,31 +1,35 @@
-import com.github.jk1.license.render.*
+import com.github.jk1.license.render.InventoryMarkdownReportRenderer
 
 plugins {
-    id "java"
     id "java-library"
-    id "com.github.johnrengelman.shadow" version "6.1.0"
+    id "com.github.johnrengelman.shadow" version "7.0.0"
     id 'com.github.jk1.dependency-license-report' version '1.16'
 }
 
 group = "com.github.md5sha256"
 version = "0.1.0"
 description = "SpigotUtils"
-sourceCompatibility = "1.8"
 
 test {
     useJUnitPlatform()
 }
 
-java {
+tasks.withType(JavaCompile) {
+    Provider<JavaCompiler> compilerProvider = javaToolchains.compilerFor {
+        JavaLanguageVersion.of(8)
+    }
+    // Keep params
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
-}
 
-compileJava {
-    // Keep params
-    options.compilerArgs += ["-parameters"]
+    JavaCompiler compiler = compilerProvider.orNull;
+    if (compiler != null && compiler.metadata.languageVersion.asInt() > 8) {
+        // Mark release as 8 if the compiler is Java 9 or newer
+        options.release.set(8)
+    }
+    options.encoding = "UTF-8"
     options.fork = true
-    options.forkOptions.executable = "javac"
+    options.compilerArgs += ["-parameters"]
 }
 
 licenseReport {
@@ -38,10 +42,6 @@ task sourcesJar(type: Jar) {
     from(sourceSets.main.allJava)
 }
 
-tasks.withType(JavaCompile) {
-    options.encoding = "UTF-8"
-}
-
 assemble {
     dependsOn(shadowJar)
 }
@@ -52,8 +52,19 @@ shadowJar {
 repositories {
     mavenCentral()
     maven {
-        name = "sonatype"
+        name = "sonatype-releases"
         url = "https://oss.sonatype.org/content/groups/public/"
+        mavenContent {
+            releasesOnly()
+        }
+    }
+
+    maven {
+        name = "sonatype-snapshots"
+        url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        mavenContent {
+            snapshotsOnly()
+        }
     }
 
     maven {
@@ -89,7 +100,6 @@ dependencies {
     api("net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT") {
         exclude(group: "net.kyori", module: "adventure-api")
     }
-
     api("net.kyori:adventure-text-serializer-plain:4.7.0") {
         exclude(group: "net.kyori", module: "adventure-api")
     }
