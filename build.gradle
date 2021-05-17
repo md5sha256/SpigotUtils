@@ -43,9 +43,14 @@ task sourcesJar(type: Jar) {
 
 publishing {
     publications{
-        spigotUtils(MavenPublication) {
+        maven(MavenPublication) {
             artifacts {
                 sourcesJar
+            }
+            pom {
+                name = 'spigot-utils'
+                packaging = 'jar'
+                url = 'https://github.com/md5sha256/SpigotUtils'
             }
         }
     }
