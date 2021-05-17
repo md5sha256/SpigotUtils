@@ -41,13 +41,18 @@ task sourcesJar(type: Jar) {
     from(sourceSets.main.allJava)
 }
 
-artifacts {
-    archives sourcesJar
+publishing {
+    publications{
+        spigotUtils(MavenPublication) {
+            artifacts {
+                sourcesJar
+            }
+        }
+    }
 }
 
-publishing {
-    publishToMavenLocal {
-    }
+publishToMavenLocal {
+    dependsOn(sourcesJar)
 }
 
 assemble {
