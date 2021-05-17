@@ -1,7 +1,8 @@
 import com.github.jk1.license.render.InventoryMarkdownReportRenderer
 
 plugins {
-    id "java-library"
+    id 'maven-publish'
+    id 'java-library'
     id "com.github.johnrengelman.shadow" version "7.0.0"
     id 'com.github.jk1.dependency-license-report' version '1.16'
 }
@@ -15,17 +16,15 @@ test {
 }
 
 tasks.withType(JavaCompile) {
-    Provider<JavaCompiler> compilerProvider = javaToolchains.compilerFor {
+    Provider<JavaCompiler> compiler = javaToolchains.compilerFor {
         JavaLanguageVersion.of(8)
     }
-    // Keep params
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-
-    JavaCompiler compiler = compilerProvider.orNull;
-    if (compiler != null && compiler.metadata.languageVersion.asInt() > 8) {
+    if (compiler.present && compiler.get().metadata.languageVersion.asInt() > 9) {
         // Mark release as 8 if the compiler is Java 9 or newer
         options.release.set(8)
+    } else {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
     options.encoding = "UTF-8"
     options.fork = true
@@ -40,6 +39,15 @@ licenseReport {
 task sourcesJar(type: Jar) {
     archiveClassifier.set("sources")
     from(sourceSets.main.allJava)
+}
+
+artifacts {
+    archives sourcesJar
+}
+
+publishing {
+    publishToMavenLocal {
+    }
 }
 
 assemble {
