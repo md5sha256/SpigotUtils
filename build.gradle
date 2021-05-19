@@ -57,6 +57,7 @@ publishing {
 }
 
 publishToMavenLocal {
+    dependsOn(jar)
     dependsOn(sourcesJar)
 }
 
