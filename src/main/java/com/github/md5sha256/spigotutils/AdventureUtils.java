@@ -7,17 +7,13 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("deprecation")
-public final class AdventureUtils {
+public class AdventureUtils {
 
-    private AdventureUtils() {}
-
-    public static @NotNull List<@NotNull String> toLegacy(@NotNull List<@NotNull Component> components) {
+    public static List<String> toLegacy(@NotNull List<Component> components) {
         final List<String> legacy = new ArrayList<>(components.size());
         for (Component c : components) {
             legacy.add(LegacyComponentSerializer.legacySection().serialize(c));
@@ -25,11 +21,11 @@ public final class AdventureUtils {
         return legacy;
     }
 
-    public static @NotNull String toLegacy(@NotNull Component component) {
+    public static String toLegacy(@NotNull Component component) {
         return LegacyComponentSerializer.legacySection().serialize(component);
     }
 
-    public static @NotNull List<@NotNull Component> fromLegacy(@NotNull List<@NotNull String> legacy) {
+    public static List<Component> fromLegacy(@NotNull List<String> legacy) {
         final List<Component> components = new ArrayList<>(legacy.size());
         for (String s : legacy) {
             components.add(LegacyComponentSerializer.legacySection().deserialize(s));
@@ -37,27 +33,15 @@ public final class AdventureUtils {
         return components;
     }
 
-    public static @NotNull Component fromLegacy(@NotNull String legacy) {
+    public static Component fromLegacy(@NotNull String legacy) {
         return LegacyComponentSerializer.legacySection().deserialize(legacy);
     }
 
-
-    public static @NotNull Component getDisplayName(@NotNull Player player) {
+    public static Component setDisplayName(@NotNull Player player) {
         if (PaperLib.isPaper()) {
             return player.displayName();
         } else {
             return fromLegacy(player.getDisplayName());
-        }
-    }
-
-    public static @Nullable Component getDisplayName(@NotNull ItemMeta meta) {
-        if (!meta.hasDisplayName()) {
-            return null;
-        }
-        if (PaperLib.isPaper()) {
-            return meta.displayName();
-        } else {
-            return fromLegacy(meta.getDisplayName());
         }
     }
 
@@ -66,6 +50,15 @@ public final class AdventureUtils {
             player.displayName(displayName);
         } else {
             player.setDisplayName(toLegacy(displayName));
+        }
+    }
+
+
+    public static Component setDisplayName(@NotNull ItemMeta meta) {
+        if (PaperLib.isPaper()) {
+            return meta.displayName();
+        } else {
+            return fromLegacy(meta.getDisplayName());
         }
     }
 
@@ -109,9 +102,17 @@ public final class AdventureUtils {
     public static void setLore(@NotNull ItemMeta meta, @NotNull List<Component> lore) {
         if (PaperLib.isPaper()) {
             meta.lore(lore);
-        }
-        else {
+        } else {
             meta.setLore(toLegacy(lore));
+        }
+    }
+
+    public static List<Component> getLore(@NotNull ItemMeta meta) {
+        if (PaperLib.isPaper()) {
+            return meta.lore();
+        } else {
+            List<String> legacy = meta.getLore();
+            return legacy == null ? new ArrayList<>() : fromLegacy(legacy);
         }
     }
 
