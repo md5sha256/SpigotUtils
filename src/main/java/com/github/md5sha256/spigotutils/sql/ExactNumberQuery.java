@@ -10,17 +10,17 @@ public class ExactNumberQuery implements NumberQuery {
 
     public final @NotNull ArithmeticComparator comparator;
 
-    private final String contraint;
+    private final String constraint;
 
     public ExactNumberQuery(@NotNull Number value, @NotNull ArithmeticComparator comparator) {
         this.value = Objects.requireNonNull(value);
         this.comparator = Objects.requireNonNull(comparator);
-        this.contraint = String.format("%s %f", comparator.operand, value.doubleValue());
+        this.constraint = String.format("%s %f", comparator.operand, value.doubleValue());
     }
 
     @Override
     public @NotNull String generateConstraints() {
-        return this.contraint;
+        return this.constraint;
     }
 
     @Override

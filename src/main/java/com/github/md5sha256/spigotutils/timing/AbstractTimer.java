@@ -23,7 +23,16 @@ public abstract class AbstractTimer<K, V, T extends TimerData<V>> implements Tim
         submitEntries(entries);
     }
 
-    protected abstract void update();
+    protected abstract boolean shouldRemove(@NotNull Map.Entry<K, T> entry);
+
+    protected synchronized void update() {
+        final Map<K, T> copy = new HashMap<>(this.entries);
+        for (Map.Entry<K, T> entry : copy.entrySet()) {
+            if (shouldRemove(entry)) {
+                this.entries.remove(entry.getKey());
+            }
+        }
+    }
 
     protected abstract void onRemove(@NotNull K key, @NotNull T value);
 

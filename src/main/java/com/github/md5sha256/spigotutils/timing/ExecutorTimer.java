@@ -27,7 +27,7 @@ public abstract class ExecutorTimer<K, V, T extends TimerData<V>> extends Abstra
     ) {
         super(entries);
         this.executor = executor;
-        this.executor.scheduleWithFixedDelay(this::update, interval, interval, timeUnit);
+        this.executor.scheduleWithFixedDelay(this::processRemoval, interval, interval, timeUnit);
     }
 
     @Override
