@@ -37,11 +37,12 @@ public class AdventureUtils {
         return LegacyComponentSerializer.legacySection().deserialize(legacy);
     }
 
-    public static Component setDisplayName(@NotNull Player player) {
+
+    public static Component getDisplayName(@NotNull ItemMeta meta) {
         if (PaperLib.isPaper()) {
-            return player.displayName();
+            return meta.displayName();
         } else {
-            return fromLegacy(player.getDisplayName());
+            return fromLegacy(meta.getDisplayName());
         }
     }
 
@@ -50,15 +51,6 @@ public class AdventureUtils {
             player.displayName(displayName);
         } else {
             player.setDisplayName(toLegacy(displayName));
-        }
-    }
-
-
-    public static Component setDisplayName(@NotNull ItemMeta meta) {
-        if (PaperLib.isPaper()) {
-            return meta.displayName();
-        } else {
-            return fromLegacy(meta.getDisplayName());
         }
     }
 
