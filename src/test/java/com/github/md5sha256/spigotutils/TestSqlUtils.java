@@ -1,4 +1,4 @@
-package com.github.md5sha256.spigotutils.test;
+package com.github.md5sha256.spigotutils;
 
 import com.github.md5sha256.spigotutils.sql.ArithmeticComparator;
 import com.github.md5sha256.spigotutils.sql.DateQuery;

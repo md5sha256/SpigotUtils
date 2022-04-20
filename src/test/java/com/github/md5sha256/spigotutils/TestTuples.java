@@ -1,4 +1,4 @@
-package com.github.md5sha256.spigotutils.test;
+package com.github.md5sha256.spigotutils;
 
 import com.github.md5sha256.spigotutils.tuple.Pair;
 import org.junit.jupiter.api.Assertions;

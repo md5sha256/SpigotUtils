@@ -1,4 +1,4 @@
-package com.github.md5sha256.spigotutils.test;
+package com.github.md5sha256.spigotutils;
 
 import com.github.md5sha256.spigotutils.timing.GuavaAdapter;
 import com.github.md5sha256.spigotutils.timing.IStopwatch;
