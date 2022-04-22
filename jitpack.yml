@@ -1,0 +1,4 @@
+jdk:
+  - openjdk8
+env:
+  GROUP: "io.github.md5sha256"
