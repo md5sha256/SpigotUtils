@@ -118,7 +118,7 @@ dependencies {
     api("net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT") {
         exclude(group: "net.kyori", module: "adventure-api")
     }
-    api("net.kyori:adventure-text-serializer-plain:4.7.0") {
+    api("net.kyori:adventure-text-serializer-plain:4.10.1") {
         exclude(group: "net.kyori", module: "adventure-api")
     }
     api("io.papermc:paperlib:1.0.6")
