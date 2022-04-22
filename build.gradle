@@ -14,12 +14,11 @@ test {
     useJUnitPlatform()
 }
 
-java.toolchain.languageVersion.set(JavaLanguageVersion.of(8))
-
 tasks.withType(JavaCompile) {
     var compiler = javaToolchains.compilerFor {
         JavaLanguageVersion.of(8)
     }
+    javaCompiler.set(compiler)
     if (compiler.present && compiler.get().metadata.languageVersion.asInt() > 9) {
         // Mark release as 8 if the compiler is Java 9 or newer
         options.release.set(8)

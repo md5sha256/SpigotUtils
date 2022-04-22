@@ -1,0 +1,27 @@
+name : "build"
+
+on : [ "pull_request", "push" ]
+
+jobs :
+  build :
+    strategy :
+      matrix :
+        java : [ 8, 11, 17 ]
+        os : [ "ubuntu-latest" ]
+    runs-on : "${{ matrix.os }}"
+    steps :
+      - name : "Checkout Repository"
+        uses : "actions/checkout@v3"
+
+      - name : "Setup JDK ${{ matrix.java }}"
+        uses : "actions/setup-java@v3"
+        with :
+          distribution : "temurin"
+          java-version : "${{ matrix.java }}"
+          java-package: "jdk"
+
+      - name : "Grant execute permission for gradlew"
+        run : "chmod +x gradlew"
+
+      - name : "Build with Gradle"
+        run : "./gradlew clean build"
