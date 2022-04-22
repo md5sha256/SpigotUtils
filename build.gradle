@@ -1,10 +1,9 @@
 import com.github.jk1.license.render.InventoryMarkdownReportRenderer
 
 plugins {
-    id 'maven-publish'
-    id 'java-library'
-    id "com.github.johnrengelman.shadow" version "7.0.0"
-    id 'com.github.jk1.dependency-license-report' version '1.16'
+    id "maven-publish"
+    id "java-library"
+    id "com.github.jk1.dependency-license-report" version "1.16"
 }
 
 group = "com.github.md5sha256"
@@ -15,8 +14,10 @@ test {
     useJUnitPlatform()
 }
 
+java.toolchain.languageVersion.set(JavaLanguageVersion.of(8))
+
 tasks.withType(JavaCompile) {
-    Provider<JavaCompiler> compiler = javaToolchains.compilerFor {
+    var compiler = javaToolchains.compilerFor {
         JavaLanguageVersion.of(8)
     }
     if (compiler.present && compiler.get().metadata.languageVersion.asInt() > 9) {
@@ -44,29 +45,28 @@ task sourcesJar(type: Jar) {
 publishing {
     publications{
         maven(MavenPublication) {
-            artifacts {
-                sourcesJar
-            }
+            from(components.java)
+            artifact(tasks.sourcesJar)
             pom {
-                name = 'spigot-utils'
-                packaging = 'jar'
-                url = 'https://github.com/md5sha256/SpigotUtils'
+                name = "spigot-utils"
+                packaging = "jar"
+                scm {
+                    connection = "scm:git:git://github.com/md5sha256/SpigotUtils.git"
+                    developerConnection = "scm:git:ssh://github.com/md5sha256/SpigotUtils.git"
+                    url = "https://github.com/md5sha256/SpigotUtils"
+                }
+                developers {
+                    developer {
+                        id = "md5sha256"
+                        name = "Andrew Wong"
+                        url = "https://github.com/md5shas256"
+                    }
+                }
             }
         }
     }
 }
 
-publishToMavenLocal {
-    dependsOn(jar)
-    dependsOn(sourcesJar)
-}
-
-assemble {
-    dependsOn(shadowJar)
-}
-
-shadowJar {
-}
 
 repositories {
     mavenCentral()
