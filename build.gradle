@@ -115,7 +115,7 @@ dependencies {
         exclude(group: "com.google.guava", module: "guava")
     }
     
-    api("net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT") {
+    api("net.kyori:adventure-text-minimessage:4.11.0") {
         exclude(group: "net.kyori", module: "adventure-api")
     }
     api("net.kyori:adventure-text-serializer-plain:4.7.0") {
