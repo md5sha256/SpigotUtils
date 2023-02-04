@@ -60,7 +60,7 @@ public final class SimpleMessage implements IMessage {
     public String toString() {
         return "SimpleMessage{" +
                 "key=" + key +
-                ", value=" + MiniMessage.get().serialize(this.value) +
+                ", value=" + MiniMessage.miniMessage().serialize(this.value) +
                 ", comment='" + comment + '\'' +
                 '}';
     }
