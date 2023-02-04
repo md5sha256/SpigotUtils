@@ -33,7 +33,7 @@ public class BukkitTaskSynchronizer implements TaskSynchronizer {
         scheduler.callSyncMethod(plugin, () -> {
             try {
                 completableFuture.complete(callable.call());
-            } catch (Throwable ex) {
+            } catch (Exception ex) {
                 if (!completableFuture.isDone()) {
                     completableFuture.completeExceptionally(ex);
                 }
@@ -45,6 +45,16 @@ public class BukkitTaskSynchronizer implements TaskSynchronizer {
 
     @Override
     public @NotNull <T> CompletableFuture<T> asyncGet(@NotNull final Callable<T> callable) {
-        return null;
+        final CompletableFuture<T> completableFuture = new CompletableFuture<>();
+        scheduler.runTaskAsynchronously(plugin, () -> {
+            try {
+                completableFuture.complete(callable.call());
+            } catch (Exception ex) {
+                if (!completableFuture.isDone()) {
+                    completableFuture.completeExceptionally(ex);
+                }
+            }
+        });
+        return completableFuture;
     }
 }
