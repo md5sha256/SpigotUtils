@@ -121,7 +121,7 @@ dependencies {
     api("net.kyori:adventure-text-serializer-plain:4.7.0") {
         exclude(group: "net.kyori", module: "adventure-api")
     }
-    api("io.papermc:paperlib:1.0.6")
+    api("io.papermc:paperlib:1.0.8")
 
     compileOnlyApi("com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT") {
         testImplementation("net.kyori:adventure-text-serializer-legacy:4.7.0")
