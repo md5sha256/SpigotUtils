@@ -3,7 +3,7 @@ import com.github.jk1.license.render.InventoryMarkdownReportRenderer
 plugins {
     id "maven-publish"
     id "java-library"
-    id "com.github.jk1.dependency-license-report" version "1.16"
+    id "com.github.jk1.dependency-license-report" version "2.1"
 }
 
 group = "com.github.md5sha256"
