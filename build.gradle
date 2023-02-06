@@ -126,7 +126,7 @@ dependencies {
     compileOnlyApi("com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT") {
         testImplementation("net.kyori:adventure-text-serializer-legacy:4.7.0")
     }
-    compileOnlyApi("org.jetbrains:annotations:20.1.0")
+    compileOnlyApi("org.jetbrains:annotations:24.0.0")
 
     // Test dependencies
     testImplementation("com.github.seeseemelk:MockBukkit-v1.16:0.25.0")
