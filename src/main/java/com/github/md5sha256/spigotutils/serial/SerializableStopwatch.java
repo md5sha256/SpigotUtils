@@ -72,7 +72,7 @@ public class SerializableStopwatch implements ConfigurationSerializable, Variabl
     }
 
     @Override
-    public long elapsed(final TimeUnit timeUnit) {
+    public long elapsed(final @NotNull TimeUnit timeUnit) {
         return timeUnit.convert(elapsedNanos(), TimeUnit.NANOSECONDS);
     }
 
@@ -90,7 +90,7 @@ public class SerializableStopwatch implements ConfigurationSerializable, Variabl
 
     @Override
     public @NotNull SerializableStopwatch setElapsedTime(final long duration, @NotNull final TimeUnit timeUnit) {
-        this.elapsedNanos = timeUnit.toMillis(duration);
+        this.elapsedNanos = timeUnit.toNanos(duration);
         if (this.stopwatch.isRunning()) {
             this.stopwatch.reset().start();
         } else {
@@ -103,7 +103,7 @@ public class SerializableStopwatch implements ConfigurationSerializable, Variabl
     public @NotNull Map<String, Object> serialize() {
         final Map<String, Object> map = new HashMap<>();
         map.put(ELAPSED_KEY, elapsedMillis());
-        map.put(RUNNING_KEY, stopwatch.isRunning());
+        map.put(RUNNING_KEY, this.stopwatch.isRunning());
         return map;
     }
 
